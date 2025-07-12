@@ -51,7 +51,9 @@ export function LoginForm() {
                 fetchOptions: {
                     onSuccess: () => {
                         toast.success("Check your email for the OTP code!");
-                        router.push(`/verify-request`);
+                        router.push(
+                            `/verify-request?email=${encodeURIComponent(email)}`
+                        );
                     },
                     onError: (error) => {
                         console.error("Error during email sign-in:", error);
