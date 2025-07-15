@@ -5,9 +5,7 @@ import {
     LayoutDashboardIcon,
     LogOutIcon,
 } from "lucide-react";
-import { toast } from "sonner";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +17,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth-client";
+import { useSignOut } from "@/hooks/use-singout";
 
 interface iAppProps {
     name: string;
@@ -28,21 +26,7 @@ interface iAppProps {
 }
 
 export function UserDropdown({ name, email, image }: iAppProps) {
-    const router = useRouter();
-
-    async function signOut() {
-        await authClient.signOut({
-            fetchOptions: {
-                onSuccess: () => {
-                    router.push("/");
-                    toast.success("Successfully logged out!");
-                },
-                onError: () => {
-                    toast.error("Failed to log out. Please try again.");
-                },
-            },
-        });
-    }
+    const handleSignOut = useSignOut();
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -106,7 +90,10 @@ export function UserDropdown({ name, email, image }: iAppProps) {
                     </DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={signOut} className="cursor-pointer">
+                <DropdownMenuItem
+                    onClick={handleSignOut}
+                    className="cursor-pointer"
+                >
                     <LogOutIcon
                         size={16}
                         className="opacity-60"
