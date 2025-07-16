@@ -1,7 +1,25 @@
 import { z } from "zod";
 
-const courseLevels = ["Beginner", "Intermediate", "Advanced"] as const;
-const courseStatus = ["Draft", "Published", "Archived"] as const;
+export const courseLevels = ["Beginner", "Intermediate", "Advanced"] as const;
+export const courseStatus = ["Draft", "Published", "Archived"] as const;
+export const courseCategories = [
+    "Development",
+    "Design",
+    "Marketing",
+    "Business",
+    "Finance",
+    "Health",
+    "Education",
+    "Lifestyle",
+    "Technology",
+    "Photography",
+    "Writing",
+    "Music",
+    "Science",
+    "Travel",
+    "Food",
+    "Other",
+] as const;
 
 export const courseSchema = z.object({
     title: z
@@ -20,7 +38,9 @@ export const courseSchema = z.object({
         .min(1, { message: "Duration must be at least 1" })
         .max(500, { message: "Duration must be at most 500" }),
     level: z.enum(courseLevels),
-    category: z.string(),
+    category: z.enum(courseCategories, {
+        message: "Category is required",
+    }),
     smallDescription: z
         .string()
         .min(3, {

@@ -1,6 +1,6 @@
 "use client";
 
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
     Card,
     CardContent,
@@ -8,8 +8,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { courseSchema, CourseSchemaType } from "@/lib/zod-schemas";
-import { ArrowLeft } from "lucide-react";
+import {
+    courseCategories,
+    courseLevels,
+    courseSchema,
+    CourseSchemaType,
+} from "@/lib/zod-schemas";
+import { ArrowLeft, SparklesIcon } from "lucide-react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,6 +27,15 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import slugify from "slugify";
+import { Textarea } from "@/components/ui/textarea";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 export default function CourseCreationPage() {
     const form = useForm<CourseSchemaType>({
@@ -33,7 +47,7 @@ export default function CourseCreationPage() {
             price: 0,
             duration: 0,
             level: "Beginner",
-            category: "",
+            category: "Other",
             status: "Draft",
             slug: "",
             smallDescription: "",
@@ -85,7 +99,160 @@ export default function CourseCreationPage() {
                                     </FormItem>
                                 )}
                             />
-                            <div className="flex gap-4"></div>
+                            <div className="flex gap-4 items-end">
+                                <FormField
+                                    control={form.control}
+                                    name="slug"
+                                    render={({ field }) => (
+                                        <FormItem className="w-full">
+                                            <FormLabel>Slug</FormLabel>
+                                            <FormControl>
+                                                <Input
+                                                    placeholder="Slug"
+                                                    {...field}
+                                                />
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <Button
+                                    type="button"
+                                    className="w-fit"
+                                    onClick={() => {
+                                        const titleValue =
+                                            form.getValues("title");
+                                        const slugified = slugify(titleValue, {
+                                            lower: true,
+                                        });
+                                        form.setValue("slug", slugified, {
+                                            shouldValidate: true,
+                                        });
+                                    }}
+                                >
+                                    Generate Slug{" "}
+                                    <SparklesIcon className="ml-1" size={16} />
+                                </Button>
+                            </div>
+
+                            <FormField
+                                control={form.control}
+                                name="smallDescription"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Small Description</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                className="min-h-[120px]"
+                                                placeholder="Small Description"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="description"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Description</FormLabel>
+                                        <FormControl>
+                                            <Textarea
+                                                className="min-h-[120px]"
+                                                placeholder="Description"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+
+                            <FormField
+                                control={form.control}
+                                name="fileKey"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Thumbnail Image</FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                placeholder="Thumbnail url"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <FormField
+                                    control={form.control}
+                                    name="category"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Category</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Select a category" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {courseCategories.map(
+                                                        (category) => (
+                                                            <SelectItem
+                                                                key={category}
+                                                                value={category}
+                                                            >
+                                                                {category}
+                                                            </SelectItem>
+                                                        )
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="level"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Level</FormLabel>
+                                            <Select
+                                                onValueChange={field.onChange}
+                                                defaultValue={field.value}
+                                            >
+                                                <FormControl>
+                                                    <SelectTrigger className="w-full">
+                                                        <SelectValue placeholder="Select a level" />
+                                                    </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                    {courseLevels.map(
+                                                        (level) => (
+                                                            <SelectItem
+                                                                key={level}
+                                                                value={level}
+                                                            >
+                                                                {level}
+                                                            </SelectItem>
+                                                        )
+                                                    )}
+                                                </SelectContent>
+                                            </Select>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                         </form>
                     </Form>
                 </CardContent>
