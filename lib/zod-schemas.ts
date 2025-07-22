@@ -32,8 +32,8 @@ export const courseSchema = z.object({
     fileKey: z
         .string()
         .min(1, { message: "File key must be at least 1 character long" }),
-    price: z.number().min(1, { message: "Price must be at least 1" }),
-    duration: z
+    price: z.coerce.number().min(1, { message: "Price must be at least 1" }),
+    duration: z.coerce
         .number()
         .min(1, { message: "Duration must be at least 1" })
         .max(500, { message: "Duration must be at most 500" }),
