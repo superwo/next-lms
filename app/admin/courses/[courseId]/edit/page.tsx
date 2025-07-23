@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { EditCourseForm } from "./_components/EditCourseForm";
+import { CourseStructure } from "./_components/CourseStructure";
 
 type Params = Promise<{ courseId: string }>;
 
@@ -38,6 +39,20 @@ export default async function EditCoursePage({ params }: { params: Params }) {
                         </CardHeader>
                         <CardContent>
                             <EditCourseForm data={data} />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="course-structure">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Course Structure</CardTitle>
+                            <CardDescription>
+                                Here you can manage the structure of your
+                                course, including modules and lessons.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <CourseStructure />
                         </CardContent>
                     </Card>
                 </TabsContent>
