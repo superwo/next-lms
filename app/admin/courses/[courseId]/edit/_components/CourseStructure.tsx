@@ -35,6 +35,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ReactNode, useState } from "react";
+import { DragEndEvent } from "@dnd-kit/core";
 
 interface iAppProps {
     data: AdminCourseSingularType;
@@ -101,13 +102,22 @@ export function CourseStructure({ data }: iAppProps) {
         );
     }
 
-    function handleDragEnd(event) {
-        const { active, over } = event;
+    interface HandleDragEndEvent {
+        active: { id: string };
+        over: { id: string } | null;
+    }
+
+    function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event as HandleDragEndEvent;
+
+        if (!over) return;
 
         if (active.id !== over.id) {
             setItems((items) => {
-                const oldIndex = items.indexOf(active.id);
-                const newIndex = items.indexOf(over.id);
+                const oldIndex = items.findIndex(
+                    (item) => item.id === active.id
+                );
+                const newIndex = items.findIndex((item) => item.id === over.id);
 
                 return arrayMove(items, oldIndex, newIndex);
             });

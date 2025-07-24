@@ -160,6 +160,7 @@ export function Uploader({ value, onChange }: UploaderProps) {
                 uploadFile(file);
             }
         },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         [fileState.objectUrl]
     );
 

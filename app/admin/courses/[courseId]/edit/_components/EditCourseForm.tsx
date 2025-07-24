@@ -46,7 +46,7 @@ export function EditCourseForm({ data }: iAppProps) {
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
 
-    const form = useForm<CourseSchemaType>({
+    const form = useForm({
         resolver: zodResolver(courseSchema),
         defaultValues: {
             title: data.title,
@@ -256,6 +256,12 @@ export function EditCourseForm({ data }: iAppProps) {
                                         placeholder="Duration"
                                         type="number"
                                         {...field}
+                                        value={
+                                            field.value === undefined ||
+                                            field.value === null
+                                                ? ""
+                                                : String(field.value)
+                                        }
                                     />
                                 </FormControl>
                                 <FormMessage />
@@ -274,6 +280,12 @@ export function EditCourseForm({ data }: iAppProps) {
                                         placeholder="Price"
                                         type="number"
                                         {...field}
+                                        value={
+                                            field.value === undefined ||
+                                            field.value === null
+                                                ? ""
+                                                : String(field.value)
+                                        }
                                     />
                                 </FormControl>
                                 <FormMessage />

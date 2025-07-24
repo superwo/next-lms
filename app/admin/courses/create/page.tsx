@@ -49,7 +49,7 @@ export default function CourseCreationPage() {
     const [isPending, startTransition] = useTransition();
     const router = useRouter();
 
-    const form = useForm<CourseSchemaType>({
+    const form = useForm({
         resolver: zodResolver(courseSchema),
         defaultValues: {
             title: "",
@@ -295,6 +295,15 @@ export default function CourseCreationPage() {
                                                     placeholder="Duration"
                                                     type="number"
                                                     {...field}
+                                                    value={
+                                                        field.value ===
+                                                            undefined ||
+                                                        field.value === null
+                                                            ? ""
+                                                            : Number(
+                                                                  field.value
+                                                              )
+                                                    }
                                                 />
                                             </FormControl>
                                             <FormMessage />
@@ -313,6 +322,15 @@ export default function CourseCreationPage() {
                                                     placeholder="Price"
                                                     type="number"
                                                     {...field}
+                                                    value={
+                                                        field.value ===
+                                                            undefined ||
+                                                        field.value === null
+                                                            ? ""
+                                                            : Number(
+                                                                  field.value
+                                                              )
+                                                    }
                                                 />
                                             </FormControl>
                                             <FormMessage />
