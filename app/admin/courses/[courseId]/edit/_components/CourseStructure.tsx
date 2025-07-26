@@ -36,6 +36,7 @@ import {
 import Link from "next/link";
 import { ReactNode, useState } from "react";
 import { DragEndEvent } from "@dnd-kit/core";
+import { toast } from "sonner";
 
 interface iAppProps {
     data: AdminCourseSingularType;
@@ -65,6 +66,7 @@ export function CourseStructure({ data }: iAppProps) {
             })),
         })) || [];
     const [items, setItems] = useState(initialItems);
+    console.log(items);
 
     function SortableItem({
         children,
@@ -102,25 +104,53 @@ export function CourseStructure({ data }: iAppProps) {
         );
     }
 
-    interface HandleDragEndEvent {
-        active: { id: string };
-        over: { id: string } | null;
-    }
+    function handleDragEnd(event) {
+        const { active, over } = event;
 
-    function handleDragEnd(event: DragEndEvent) {
-        const { active, over } = event as HandleDragEndEvent;
+        if (!over || active.id === over.id) {
+            return;
+        }
 
-        if (!over) return;
+        const activeId = active.id;
+        const overId = over.id;
+        const activeType = active.data.current?.type as "chapter" | "lesson";
+        const overType = over.data.current?.type as "chapter" | "lesson";
+        const courseId = data.id;
 
-        if (active.id !== over.id) {
-            setItems((items) => {
-                const oldIndex = items.findIndex(
-                    (item) => item.id === active.id
+        if (activeType === "chapter") {
+            let targetChapterId = null;
+            if (overType === "chapter") {
+                targetChapterId = overId;
+            } else if (overType === "lesson") {
+                targetChapterId = over.data.current?.chapterId ?? null;
+            }
+
+            if (!targetChapterId) {
+                toast.error(
+                    "Could not determine target chapter for reordering"
                 );
-                const newIndex = items.findIndex((item) => item.id === over.id);
+                return;
+            }
 
-                return arrayMove(items, oldIndex, newIndex);
-            });
+            const oldIndex = items.findIndex((item) => item.id === activeId);
+            const newIndex = items.findIndex(
+                (item) => item.id === targetChapterId
+            );
+
+            if (oldIndex === -1 || newIndex === -1) {
+                toast.error("Invalid drag operation");
+                return;
+            }
+
+            const reordedLocalChapters = arrayMove(items, oldIndex, newIndex);
+            const updatedChaptersForState = reordedLocalChapters.map(
+                (chapter, index) => ({
+                    ...chapter,
+                    order: index + 1, // update order based on new index
+                })
+            );
+            const previousItems = [...items];
+            setItems(updatedChaptersForState);
         }
     }
 
