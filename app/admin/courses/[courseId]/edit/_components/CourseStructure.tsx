@@ -152,6 +152,71 @@ export function CourseStructure({ data }: iAppProps) {
             const previousItems = [...items];
             setItems(updatedChaptersForState);
         }
+
+        if (activeType === "lesson" && overType === "lesson") {
+            const chapterId = active.data.current?.chapterId;
+            const overChapterId = over.data.current?.chapterId;
+
+            if (!chapterId || chapterId !== overChapterId) {
+                toast.error(
+                    "Could not determine chapter for lesson reordering"
+                );
+                return;
+            }
+
+            const chapterIndex = items.findIndex(
+                (chapter) => chapter.id === chapterId
+            );
+
+            if (chapterIndex === -1) {
+                toast.error("Invalid chapter for lesson reordering");
+                return;
+            }
+
+            const chapterToUpdate = items[chapterIndex];
+            const oldLessonIndex = chapterToUpdate.lessons.findIndex(
+                (lesson) => lesson.id === activeId
+            );
+            const newLessonIndex = chapterToUpdate.lessons.findIndex(
+                (lesson) => lesson.id === overId
+            );
+
+            if (oldLessonIndex === -1 || newLessonIndex === -1) {
+                toast.error("Invalid lesson drag operation");
+                return;
+            }
+
+            const reorderedLessons = arrayMove(
+                chapterToUpdate.lessons,
+                oldLessonIndex,
+                newLessonIndex
+            );
+            const updatedLessonsForState = reorderedLessons.map(
+                (lesson, index) => ({
+                    ...lesson,
+                    order: index + 1, // update order based on new index
+                })
+            );
+
+            const newItems = [...items];
+
+            newItems[chapterIndex] = {
+                ...chapterToUpdate,
+                lessons: updatedLessonsForState,
+            };
+
+            const previousItems = [...items];
+            setItems(newItems);
+
+            if (courseId) {
+                const lessonsToUpdate = updatedLessonsForState.map(
+                    (lesson) => ({
+                        id: lesson.id,
+                        position: lesson.order,
+                    })
+                );
+            }
+        }
     }
 
     function toggleChapter(chapterId: string) {
@@ -181,7 +246,7 @@ export function CourseStructure({ data }: iAppProps) {
                 <CardHeader className="flex flex-row items-center justify-between border-b border-border">
                     <CardTitle>Course Structure</CardTitle>
                 </CardHeader>
-                <CardContent className="">
+                <CardContent className="space-y-8">
                     <SortableContext
                         strategy={verticalListSortingStrategy}
                         items={items}
