@@ -37,6 +37,7 @@ import Link from "next/link";
 import { ReactNode, useState } from "react";
 import { DragEndEvent } from "@dnd-kit/core";
 import { toast } from "sonner";
+import { reorderLessons } from "../actions";
 
 interface iAppProps {
     data: AdminCourseSingularType;
@@ -215,7 +216,24 @@ export function CourseStructure({ data }: iAppProps) {
                         position: lesson.order,
                     })
                 );
+                const reorderLessonPromise = () =>
+                    reorderLessons(chapterId, lessonsToUpdate, courseId);
+                toast.promise(reorderLessonPromise(), {
+                    loading: "Reordering lessons...",
+                    success: (result) => {
+                        if (result.status === "success") {
+                            return result.message;
+                        }
+                        throw new Error(result.message);
+                    },
+                    error: () => {
+                        setItems(previousItems);
+                        return "Failed to reorder lessons";
+                    },
+                });
             }
+
+            return;
         }
     }
 
