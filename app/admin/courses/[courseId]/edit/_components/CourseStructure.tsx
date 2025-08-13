@@ -39,6 +39,7 @@ import { DragEndEvent } from "@dnd-kit/core";
 import { toast } from "sonner";
 import { reorderChapters, reorderLessons } from "../actions";
 import { NewChapterModal } from "./NewChapterModal";
+import { NewLessonModal } from "./NewLessonModal.tsx";
 
 interface iAppProps {
     data: AdminCourseSingularType;
@@ -433,12 +434,10 @@ export function CourseStructure({ data }: iAppProps) {
                                                         )}
                                                     </SortableContext>
                                                     <div className="p-2">
-                                                        <Button
-                                                            variant={"outline"}
-                                                            className="w-full"
-                                                        >
-                                                            Create New Lesson
-                                                        </Button>
+                                                        <NewLessonModal
+                                                            courseId={data.id}
+                                                            chapterId={item.id}
+                                                        />
                                                     </div>
                                                 </div>
                                             </CollapsibleContent>
