@@ -43,7 +43,7 @@ export function Uploader({ value, onChange }: UploaderProps) {
         isDeleting: false,
         fileType: "image",
         key: value,
-        objectUrl: fileUrl,
+        objectUrl: value ? fileUrl : undefined,
     });
 
     async function uploadFile(file: File) {
