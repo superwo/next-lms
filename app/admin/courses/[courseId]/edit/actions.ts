@@ -224,3 +224,77 @@ export async function createLesson(
         };
     }
 }
+
+export async function deleteLesson({
+    chapterId,
+    courseId,
+    lessonId,
+}: {
+    chapterId: string;
+    courseId: string;
+    lessonId: string;
+}): Promise<ApiResponse> {
+    await requireAdmin();
+    try {
+        const chapterWithLessons = await prisma.chapter.findUnique({
+            where: { id: chapterId },
+            select: {
+                lessons: {
+                    orderBy: {
+                        position: "asc",
+                    },
+                    select: {
+                        id: true,
+                        position: true,
+                    },
+                },
+            },
+        });
+
+        if (!chapterWithLessons) {
+            return {
+                status: "error",
+                message: "Chapter not found",
+            };
+        }
+
+        const lessons = chapterWithLessons.lessons;
+
+        const lessonToDelete = lessons.find((l) => l.id === lessonId);
+
+        if (!lessonToDelete) {
+            return {
+                status: "error",
+                message: "Lesson not found",
+            };
+        }
+
+        const remainingLessons = lessons.filter(
+            (lesson) => lesson.id !== lessonId
+        );
+        const updates = remainingLessons.map((lesson, index) => {
+            return prisma.lesson.update({
+                where: { id: lesson.id },
+                data: { position: index + 1 },
+            });
+        });
+
+        await prisma.$transaction([
+            prisma.lesson.delete({
+                where: { id: lessonId, chapterId },
+            }),
+            ...updates,
+        ]);
+
+        revalidatePath(`/admin/courses/${courseId}/edit`);
+        return {
+            status: "success",
+            message: "Lesson deleted successfully",
+        };
+    } catch {
+        return {
+            status: "error",
+            message: "Failed to delete lesson",
+        };
+    }
+}

@@ -40,6 +40,7 @@ import { toast } from "sonner";
 import { reorderChapters, reorderLessons } from "../actions";
 import { NewChapterModal } from "./NewChapterModal";
 import { NewLessonModal } from "./NewLessonModal.tsx";
+import { DeleteLesson } from "./DeleteLesson";
 
 interface iAppProps {
     data: AdminCourseSingularType;
@@ -417,16 +418,17 @@ export function CourseStructure({ data }: iAppProps) {
                                                                                     }
                                                                                 </Link>
                                                                             </div>
-                                                                            <Button
-                                                                                variant={
-                                                                                    "outline"
+                                                                            <DeleteLesson
+                                                                                chapterId={
+                                                                                    item.id
                                                                                 }
-                                                                                size={
-                                                                                    "icon"
+                                                                                courseId={
+                                                                                    data.id
                                                                                 }
-                                                                            >
-                                                                                <Trash2 className="size-4" />
-                                                                            </Button>
+                                                                                lessonId={
+                                                                                    lesson.id
+                                                                                }
+                                                                            />
                                                                         </div>
                                                                     )}
                                                                 </SortableItem>
