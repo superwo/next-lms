@@ -121,6 +121,7 @@ export function LessonForm({ data, chapterId, courseId }: iAppProps) {
                                             <Uploader
                                                 onChange={field.onChange}
                                                 value={field.value}
+                                                fileTypeAccepted="video"
                                             />
                                         </FormControl>
                                         <FormMessage />
