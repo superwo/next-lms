@@ -308,7 +308,8 @@ export function Uploader({
                 : { "image/*": [] },
         maxFiles: 1,
         multiple: false,
-        maxSize: 5 * 1024 * 1024, // 5mb
+        maxSize:
+            fileTypeAccepted === "video" ? 5000 * 1024 * 1024 : 5 * 1024 * 1024, // 5MB for images, 5GB for videos
         onDropRejected: rejectedFiles,
         disabled:
             fileState.uploading ||
