@@ -1,12 +1,10 @@
 "use client";
 
 import * as React from "react";
-import { BarChart, CartesianGrid, XAxis } from "recharts";
+import { Bar, BarChart, CartesianGrid, XAxis } from "recharts";
 
-import { useIsMobile } from "@/hooks/use-mobile";
 import {
     Card,
-    CardAction,
     CardContent,
     CardDescription,
     CardHeader,
@@ -18,42 +16,38 @@ import {
     ChartTooltip,
     ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 
 export const description = "An interactive area chart";
 
+function getRandomEnrollments(min: number, max: number) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const dummyEnrollmentsData = [
-  { date: "2024-01-01", enrollments: 80 },
-  { date: "2024-01-15", enrollments: 95 },
-  { date: "2024-02-01", enrollments: 110 },
-  { date: "2024-02-15", enrollments: 120 },
-  { date: "2024-03-01", enrollments: 130 },
-  { date: "2024-03-15", enrollments: 140 },
-  { date: "2024-04-01", enrollments: 150 },
-  { date: "2024-04-15", enrollments: 160 },
-  { date: "2024-05-01", enrollments: 170 },
-  { date: "2024-05-15", enrollments: 180 },
-  { date: "2024-06-01", enrollments: 190 },
-  { date: "2024-06-15", enrollments: 200 },
-  { date: "2024-07-01", enrollments: 210 },
-  { date: "2024-07-15", enrollments: 220 },
-  { date: "2024-08-01", enrollments: 230 },
-  { date: "2024-08-15", enrollments: 240 },
-  { date: "2024-09-01", enrollments: 250 },
-  { date: "2024-09-15", enrollments: 260 },
-  { date: "2024-10-01", enrollments: 270 },
-  { date: "2024-10-15", enrollments: 280 },
-  { date: "2024-11-01", enrollments: 290 },
-  { date: "2024-11-15", enrollments: 300 },
-  { date: "2024-12-01", enrollments: 310 },
-  { date: "2024-12-15", enrollments: 320 },
+    { date: "2024-01-01", enrollments: getRandomEnrollments(80, 120) },
+    { date: "2024-01-15", enrollments: getRandomEnrollments(80, 120) },
+    { date: "2024-02-01", enrollments: getRandomEnrollments(100, 140) },
+    { date: "2024-02-15", enrollments: getRandomEnrollments(100, 140) },
+    { date: "2024-03-01", enrollments: getRandomEnrollments(120, 160) },
+    { date: "2024-03-15", enrollments: getRandomEnrollments(120, 160) },
+    { date: "2024-04-01", enrollments: getRandomEnrollments(140, 180) },
+    { date: "2024-04-15", enrollments: getRandomEnrollments(140, 180) },
+    { date: "2024-05-01", enrollments: getRandomEnrollments(160, 200) },
+    { date: "2024-05-15", enrollments: getRandomEnrollments(160, 200) },
+    { date: "2024-06-01", enrollments: getRandomEnrollments(180, 220) },
+    { date: "2024-06-15", enrollments: getRandomEnrollments(180, 220) },
+    { date: "2024-07-01", enrollments: getRandomEnrollments(200, 240) },
+    { date: "2024-07-15", enrollments: getRandomEnrollments(200, 240) },
+    { date: "2024-08-01", enrollments: getRandomEnrollments(220, 260) },
+    { date: "2024-08-15", enrollments: getRandomEnrollments(220, 260) },
+    { date: "2024-09-01", enrollments: getRandomEnrollments(240, 280) },
+    { date: "2024-09-15", enrollments: getRandomEnrollments(240, 280) },
+    { date: "2024-10-01", enrollments: getRandomEnrollments(260, 300) },
+    { date: "2024-10-15", enrollments: getRandomEnrollments(260, 300) },
+    { date: "2024-11-01", enrollments: getRandomEnrollments(280, 320) },
+    { date: "2024-11-15", enrollments: getRandomEnrollments(280, 320) },
+    { date: "2024-12-01", enrollments: getRandomEnrollments(300, 340) },
+    { date: "2024-12-15", enrollments: getRandomEnrollments(260, 320) },
 ];
 
 const chartConfig = {
@@ -64,15 +58,6 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function ChartAreaInteractive() {
-    const isMobile = useIsMobile();
-    const [timeRange, setTimeRange] = React.useState("90d");
-
-    React.useEffect(() => {
-        if (isMobile) {
-            setTimeRange("7d");
-        }
-    }, [isMobile]);
-
     return (
         <Card className="@container/card">
             <CardHeader>
@@ -112,6 +97,28 @@ export function ChartAreaInteractive() {
                                     day: "numeric",
                                 });
                             }}
+                        />
+
+                        <ChartTooltip
+                            content={
+                                <ChartTooltipContent
+                                    className="w-[150px]"
+                                    labelFormatter={(value) => {
+                                        const date = new Date(value);
+                                        return date.toLocaleDateString(
+                                            "en-US",
+                                            {
+                                                month: "short",
+                                                day: "numeric",
+                                            }
+                                        );
+                                    }}
+                                />
+                            }
+                        />
+                        <Bar
+                            dataKey={"enrollments"}
+                            fill="var(--color-enrollments)"
                         />
                     </BarChart>
                 </ChartContainer>
