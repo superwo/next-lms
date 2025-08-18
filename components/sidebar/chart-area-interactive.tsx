@@ -19,37 +19,6 @@ import {
 
 export const description = "An interactive area chart";
 
-function getRandomEnrollments(min: number, max: number) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-const dummyEnrollmentsData = [
-    { date: "2024-01-01", enrollments: getRandomEnrollments(80, 120) },
-    { date: "2024-01-15", enrollments: getRandomEnrollments(80, 120) },
-    { date: "2024-02-01", enrollments: getRandomEnrollments(100, 140) },
-    { date: "2024-02-15", enrollments: getRandomEnrollments(100, 140) },
-    { date: "2024-03-01", enrollments: getRandomEnrollments(120, 160) },
-    { date: "2024-03-15", enrollments: getRandomEnrollments(120, 160) },
-    { date: "2024-04-01", enrollments: getRandomEnrollments(140, 180) },
-    { date: "2024-04-15", enrollments: getRandomEnrollments(140, 180) },
-    { date: "2024-05-01", enrollments: getRandomEnrollments(160, 200) },
-    { date: "2024-05-15", enrollments: getRandomEnrollments(160, 200) },
-    { date: "2024-06-01", enrollments: getRandomEnrollments(180, 220) },
-    { date: "2024-06-15", enrollments: getRandomEnrollments(180, 220) },
-    { date: "2024-07-01", enrollments: getRandomEnrollments(200, 240) },
-    { date: "2024-07-15", enrollments: getRandomEnrollments(200, 240) },
-    { date: "2024-08-01", enrollments: getRandomEnrollments(220, 260) },
-    { date: "2024-08-15", enrollments: getRandomEnrollments(220, 260) },
-    { date: "2024-09-01", enrollments: getRandomEnrollments(240, 280) },
-    { date: "2024-09-15", enrollments: getRandomEnrollments(240, 280) },
-    { date: "2024-10-01", enrollments: getRandomEnrollments(260, 300) },
-    { date: "2024-10-15", enrollments: getRandomEnrollments(260, 300) },
-    { date: "2024-11-01", enrollments: getRandomEnrollments(280, 320) },
-    { date: "2024-11-15", enrollments: getRandomEnrollments(280, 320) },
-    { date: "2024-12-01", enrollments: getRandomEnrollments(300, 340) },
-    { date: "2024-12-15", enrollments: getRandomEnrollments(260, 320) },
-];
-
 const chartConfig = {
     enrollments: {
         label: "Enrollments",
@@ -57,17 +26,25 @@ const chartConfig = {
     },
 } satisfies ChartConfig;
 
-export function ChartAreaInteractive() {
+interface ChartAreaInteractiveProps {
+    data: { date: string; enrollments: number }[];
+}
+
+export function ChartAreaInteractive({ data }: ChartAreaInteractiveProps) {
+    const totalEnrollmentsNumber = React.useMemo(() => {
+        return data.reduce((acc, curr) => acc + curr.enrollments, 0);
+    }, [data]);
     return (
         <Card className="@container/card">
             <CardHeader>
                 <CardTitle>Total Enrollments</CardTitle>
                 <CardDescription>
                     <span className="hidden @[540px]/card:block">
-                        Total Enrollments for the last 30 days: 1200
+                        Total Enrollments for the last 30 days:{" "}
+                        {totalEnrollmentsNumber}
                     </span>
                     <span className="@[540px]/card:hidden">
-                        Last 30 days: 1200
+                        Last 30 days: {totalEnrollmentsNumber}
                     </span>
                 </CardDescription>
             </CardHeader>
@@ -77,7 +54,7 @@ export function ChartAreaInteractive() {
                     config={chartConfig}
                 >
                     <BarChart
-                        data={dummyEnrollmentsData}
+                        data={data}
                         margin={{
                             left: 12,
                             right: 12,
