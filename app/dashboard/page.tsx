@@ -1,6 +1,8 @@
 import { EmptyState } from "@/components/general/EmptyState";
 import { getAllCourses } from "../data/course/get-all-courses";
 import { getEnrolledCourses } from "../data/user/get-enrolled-courses";
+import { PublicCourseCard } from "../(public)/_components/PublicCourseCard";
+import Link from "next/link";
 
 export default async function DashboardPage() {
     const [courses, enrolledCourses] = await Promise.all([
@@ -24,11 +26,20 @@ export default async function DashboardPage() {
                     href="/courses"
                 />
             ) : (
-                <p>The courses you are enrolled in</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
+                    {enrolledCourses.map((course) => (
+                        <Link
+                            key={course.Course.id}
+                            href={`/dashboard/${course.Course.slug}`}
+                        >
+                            {course.Course.title}
+                        </Link>
+                    ))}
+                </div>
             )}
 
             <section className="mt-10">
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 mb-5">
                     <h1 className="text-3xl font-bold">Available Courses</h1>
                     <p className="text-muted-foreground">
                         Here you can see all the courses available in the
@@ -49,7 +60,22 @@ export default async function DashboardPage() {
                         href="/courses"
                     />
                 ) : (
-                    <p>alsdfjajksfd jlasdf</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {courses
+                            .filter(
+                                (course) =>
+                                    !enrolledCourses.some(
+                                        ({ Course: enrolled }) =>
+                                            enrolled.id === course.id
+                                    )
+                            )
+                            .map((course) => (
+                                <PublicCourseCard
+                                    key={course.id}
+                                    data={course}
+                                />
+                            ))}
+                    </div>
                 )}
             </section>
         </>
