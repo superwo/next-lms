@@ -5,6 +5,8 @@ import {
 } from "../_components/PublicCourseCard";
 import { Suspense } from "react";
 
+export const dynamic = "force-dynamic"; // Force dynamic rendering for this route
+
 export default function PublicCoursesRoute() {
     return (
         <div className="mt-5">
