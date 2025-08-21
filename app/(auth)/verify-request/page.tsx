@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
 import {
     Card,
     CardContent,
@@ -19,7 +19,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
 
-export default function VerifyRequestPage() {
+export default function VerifyRequestRoute() {
+    return (
+        <Suspense>
+            <VerifyRequest />
+        </Suspense>
+    );
+}
+
+function VerifyRequest() {
     const [otp, setOtp] = useState("");
 
     const [emailPending, startTransition] = useTransition();
